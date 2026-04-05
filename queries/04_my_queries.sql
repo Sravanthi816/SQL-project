@@ -103,7 +103,7 @@ Using:
 	•	categories table
 	•	products table
 
-Sort the result from highest average price to lowest average price.
+👉 Sort the result from highest average price to lowest average price.
 
 SELECT c.category_name, AVG(p.price) AS average_price
 FROM categories c
@@ -111,3 +111,79 @@ LEFT JOIN products p ON c.category_id = p.category_id
 GROUP BY c.category_id, c.category_name
 ORDER BY average_price DESC;
 
+#Write a SQL query to show:
+    •	customer_id
+	•	first_name
+	•	total number of orders
+	•	total amount spent
+#👉Show all customers (even with no orders)
+#👉Sort by total amount spent (highest → lowest)
+
+Select c.customer_id, c.first_name, count(o.order_id) as total_orders, coalesce(sum(o.total_amount),0) as total_money_spent
+From customers c 
+Left join orders o on c.customer_id = o.customer_id
+Group by c.customer_id, c.first_name
+Order by total_money_spent desc;
+
+#Write a SQL query to show:
+	•	product_name
+	•	category_name
+	•	price
+
+for all products whose price is greater than the average price of all products.
+
+Sort the result by price from highest to lowest.
+
+Select p.product_name, c.category_name, p.price
+From products p
+Join categories c on p.category_id = c.category_id 
+Where p.price>(select avg(price) from products)
+Order by p.price desc;
+
+#Write a SQL query to show:
+	•	customer_id
+	•	first_name
+	•	last_name
+
+for customers who have not placed any orders.
+
+Select c.customer_id, c.first_name, c.last_name
+From customers c 
+Left join orders o on c.customer_id= o.customer_id
+Where  o.order_id is NULL
+Order by o.customer_id desc;
+
+
+SELECT 
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    COUNT(o.order_id) AS total_orders
+FROM customers c
+LEFT JOIN orders o 
+    ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.first_name, c.last_name
+HAVING COUNT(o.order_id) = 0;
+
+
+#Write a SQL query to show:
+	•	product_name
+	•	price
+
+for the top 3 most expensive products.
+
+Select p.product_name, p.price from products p
+Order by p.price desc
+Limit 3;
+
+#Write a SQL query to show:
+	•	category_name
+	•	total number of products in each category
+
+but show only categories that have more than 1 product.
+Select c.customer_id, c.first_name, c.last_name, count(o.order_id) as total_number_of_orders
+From customers c
+Left join orders o on c.customer_id = o.customer_id
+Group by c.customer_id, c.first_name, c.last_name
+Having (count(o.order_id))>=2
+Order by c.customer_id asc;
