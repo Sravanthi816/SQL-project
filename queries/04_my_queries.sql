@@ -187,3 +187,136 @@ Left join orders o on c.customer_id = o.customer_id
 Group by c.customer_id, c.first_name, c.last_name
 Having (count(o.order_id))>=2
 Order by c.customer_id asc;
+
+
+#Write a SQL query to show:
+	•	product_name
+	•	price
+
+for products whose price is between 20 and 80.
+
+Sort the result by price from lowest to highest.
+
+Select p.product_name, p.price from products p 
+Where p.price between 20 and 80
+Order by p.price asc;
+#Where  p.price >=20 AND p.price<=80
+
+
+#
+Write a SQL query to show:
+	•	customer_id
+	•	total number of orders
+	•	total amount spent
+
+for each customer in the orders table only.
+
+Sort the result by total amount spent from highest to lowest.
+
+# Write a SQL query to show:
+	•	customer_id
+	•	average order amount
+
+from the orders table,
+
+but show only customers whose average order amount is greater than 100.
+
+Sort the result by average order amount from highest to lowest.
+
+Select customer_id, count(o.order_id)
+From orders o
+Group by customer_id
+Having (count(o.order_id) =2)
+Order by customer_id asc;
+
+#Write a SQL query to show:
+	•	product_name
+	•	category_name
+	•	price
+
+for all products in the Electronics category.
+
+Sort the result by price from highest to lowest.
+
+Select c.category_id, c.category_name, p.product_name, p.price from categories c
+Join products p on c.category_id =p.category_id
+where c.category_name= 'Electronics'
+Order by p.price desc;
+
+#Write a SQL query to show:
+	•	customer_id
+	•	first_name
+	•	last_name
+
+for customers who placed at least one order.
+
+Sort the result by customer_id.
+
+#Write a SQL query to show:
+	•	product_name
+	•	price
+
+for products that are not in the Electronics category.
+
+Sort the result by price from highest to lowest
+
+Select p.product_name, p.price from categories c
+Join products p on c.category_id =p.category_id
+where c.category_name<> 'Electronics'
+Order by p.price desc;
+
+SELECT p.product_name, p.price
+FROM products p
+JOIN categories c ON p.category_id = c.category_id
+WHERE c.category_name <> 'Electronics'
+ORDER BY p.price DESC;
+
+SELECT p.product_name, p.price
+FROM products p
+JOIN categories c ON p.category_id = c.category_id
+WHERE c.category_name != 'Electronics'
+ORDER BY p.price DESC;
+
+#Write a SQL query to show:
+	•	customer_id
+	•	first_name
+	•	last_name
+	•	total amount spent
+
+for customers whose total spending is between 100 and 300.
+
+Sort the result by total amount spent from highest to lowest.
+
+Select c.customer_id, c.first_name, c.last_name, coalesce(sum(o.total_amount),0) as total_amount_spent
+From customers c
+Left join orders o on c.customer_id=o.customer_id
+Group by c.customer_id, c.first_name, c.last_name
+Having coalesce(sum(o.total_amount),0) between 100 and 300
+Order by  total_amount_spent desc;
+
+#Write a SQL query to show:
+	•	category_name
+	•	average product price
+
+but show only categories whose average product price is greater than 30.
+
+Sort the result by average product price from highest to lowest.
+
+Select c.category_name, avg(p.price) as average_product_price
+From categories c
+Join products p on c.category_id = p.category_id
+GROUP BY c.category_id, c.category_name
+Having (avg(p.price) >30)
+Order by average_product_price desc;
+
+#Write a SQL query to show:
+	•	customer_id
+	•	first_name
+	•	last_name
+	•	total number of orders
+
+for customers who placed between 1 and 2 orders.
+
+Sort the result by total number of orders from highest to lowest.
+
+
