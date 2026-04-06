@@ -319,4 +319,81 @@ for customers who placed between 1 and 2 orders.
 
 Sort the result by total number of orders from highest to lowest.
 
+Select c.customer_id, c.first_name, c.last_name, count(o.order_id) as total_orders
+From customers c
+Join orders o on c.customer_id =o.customer_id
+Group by  c.customer_id, c.first_name, c.last_name
+Having (count(o.order_id)) between 1 and 2
+Order by total_orders desc;
+
+# Write a SQL query to show:
+	•	category_name
+	•	total number of products
+	•	average product price
+
+for each category.
+
+Sort the result by average product price from highest to lowest.
+
+Select c.category_name, count(p.product_id) as total_number_products, avg(p.price) as average_product_price
+From categories c
+Join products p on c.category_id = p.category_id
+Group by c.category_id, c.category_name
+Order by average_product_price desc; 
+
+#Write a SQL query to show:
+	•	customer_id
+	•	first_name
+	•	last_name
+	•	average order amount
+
+for customers whose average order amount is between 100 and 200.
+
+Sort the result by average order amount from highest to lowest.
+Select c.customer_id, c.first_name, c.last_name, round(avg(o.total_amount) :: numeric, 2)as average_order_amount 
+From customers c
+Join orders o on c.customer_id =o.customer_id
+Group by c.customer_id, c.first_name, c.last_name
+Having (avg(o.total_amount) between 100 and 200)
+Order by average_order_amount desc;
+
+#Write a SQL query to show:
+	•	product_name
+	•	price
+	•	category_name
+
+for products whose price is less than the average price of all products.
+
+Sort the result by price from lowest to highest.
+
+Select p.product_name, p.price, c.category_name
+From products p
+Join categories c on p.category_id =c.category_id
+Group by p.product_name, p.price, c.category_name
+Having (p.price < avg(p.price))
+Order by p.price asc;
+
+#Write a SQL query to show:
+	•	customer_id
+	•	first_name
+	•	last_name
+	•	total amount spent
+
+for customers whose total spending is greater than the average total spending of all customers.
+
+Select c.customer_id, c.first_name, c.last_name, sum(o.total_amount) as total_amount_spent
+from customers c
+Join orders o on c.customer_id = o.customer_id
+Group by c.customer_id, c.first_name, c.last_name
+Having (sum(o.total_amount) > 
+(Select avg(customer_total)
+from(
+Select customer_id, sum(total_amount) as customer_total
+From orders
+Group by customer_id
+)As customer_spending
+)
+)
+order by total_amount_spent desc;
+
 
