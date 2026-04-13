@@ -686,4 +686,195 @@ from orders
 group by customer_id) as order_counts
 );
 
+Write a SQL query to show:
+	•	category_name
+	•	the highest product price in that category
+
+for categories whose highest product price is less than the overall highest product price in the products table
+
+Select c.category_name, max(p.price) from categories c
+Join products p on c.category_id = p.category_id
+Group by c.category_id, c.category_name
+Having max(p.price) <(select max(p2.price) from products p2 );
+
+
+Write a SQL query to show:
+	•	customer_id
+	•	first_name
+	•	last_name
+
+for customers who have placed exactly the same number of orders as the average number of orders per customer
+
+Select c.customer_id, c.first_name, c.last_name, count(o.order_id) as total_orders from customers c
+Join orders o on c.customer_id = o.customer_id 
+Group by c.customer_id, c.first_name, c.last_name
+Having count(o.order_id) =(select round(avg(avg_number_orders)) from 
+(Select customer_id, count(o2.order_id) as avg_number_orders from orders o2 
+Group by customer_id) as totat_avg_orders);
+
+Select c.customer_id, c.first_name, c.last_name, count(o.order_id) as total_orders from customers c
+Join orders o on c.customer_id = o.customer_id 
+Group by c.customer_id, c.first_name, c.last_name
+Having count(o.order_id) =(select cast(avg(avg_number_orders) as integer) from 
+(Select customer_id, count(o2.order_id) as avg_number_orders from orders o2 
+Group by customer_id) as totat_avg_orders);
+
+
+Write a SQL query to show:
+	•	product_name
+	•	price
+
+for products whose price is greater than the average price of all products but less than the maximum price in their category
+
+
+Select p.product_name, p.price from products p
+Where p.price > (select avg(p1.price) from products p1)
+And  p.price < (select max(p2.price) from products p2
+Where p2.category_id = p.category_id);
+
+
+Write a SQL query to show:
+	•	first_name
+	•	last_name
+
+for customers whose total spending is greater than the minimum total spending by any customer.
+
+
+Select c.first_name, c.last_name, sum(total_amount) as total_spending  from customers c
+Join orders o on c.customer_id = o.customer_id 
+Group by c.customer_id, c.first_name, c.last_name
+Having sum(total_amount) >(select min(total_spent) from 
+( select customer_id, sum(o.total_amount) as total_spent from orders o
+Group by customer_id) 
+As total_spending_amount)
+Order by total_spending desc;
+
+
+Write a SQL query to show:
+	•	category_name
+	•	total number of products
+
+for categories whose product count is greater than the average product count across all categories.
+
+Select c.category_name, count(p.product_id) as total_number_of_products from categories c
+Join products p on c.category_id = p.category_id
+Group by c.category_id, c.category_name
+Having  count(p.product_id) > (select  avg(product_count) from 
+(Select category_id, count(product_id) as product_count from products
+Group by category_id) as category_product_counts);
+
+
+Write a SQL query to show:
+	•	first_name
+	•	last_name
+
+for customers whose total spending is between the minimum and maximum total spending of all customers, but not equal to either one.
+
+select c.first_name, c.last_name, sum(o.total_amount) as total_spent from customers c
+Join orders o on c.customer_id = o.customer_id
+Group by c.customer_id, c.first_name, c.last_name
+Having sum(o.total_amount) > (select min(total_spent) from
+(select customer_id, sum(o2.total_amount) as total_spent from orders o2
+Group by customer_id) as total_spending_amount)
+And sum(o.total_amount) < (select max(total_spent) from
+(select customer_id, sum(o3.total_amount) as total_spent from orders o3
+Group by customer_id) as total_spending_amount)
+Order by total_spent desc;
+#Write a SQL query to show:
+	•	product_name
+	•	price
+
+for products whose price is between the average and maximum price of their own category, but not equal to either one.
+select p.product_name, p.price from products p
+Where p.price > (select avg(p1.price) from products p1
+Where p1.category_id = p.category_id)		
+And p.price < (select max(p2.price) from products p2
+Where p2.category_id = p.category_id);
+#Write a SQL query to show:
+	•	customer_id
+	•	first_name
+	•	last_name
+
+for customers who have placed more orders than at least one other customer
+
+
+Select c.customer_id, c.first_name, c.last_name, count(o.order_id) as total_orders from customers c
+Join orders o on c.customer_id =o.customer_id
+Group by c.customer_id, c.first_name, c.last_name
+Having count(o.order_id) > (select min(orders) from (select customer_id, count(o1.order_id) as orders from orders o1
+Group by customer_id) as order_counts);
+
+#Write a SQL query to show:
+	•	customer_id
+	•	total number of orders
+
+for customers who have placed more orders than the average number of orders across all customers
+Select c.customer_id , count(o.order_id) as total_orders from customers c 
+Join orders o on c.customer_id = o.customer_id
+Group by c.customer_id
+Having count(o.order_id) > (select avg(avg_no_orders) from 
+(Select customer_id, count(o1.order_id) as avg_no_orders 
+from orders o1
+Group by customer_id) as total_avg_orders);
+
+#Write a SQL query to show:
+	•	product_name
+	•	price
+
+for products whose price is greater than the average price of all products
+but less than the maximum price of all products.
+
+Select p.product_name, p.price from products p
+Where p.price > (select avg(p1.price) from products p1) 
+And  p.price < (select max(p2.price) from products p2);
+
+#Write a SQL query to show:
+	•	first_name
+	•	last_name
+
+for customers whose total spending is greater than the average total spending of all customers
+but less than the maximum total spending of any customer.
+
+select c.first_name, c.last_name, sum(o.total_amount) as total_spent from customers c
+Join orders o on c.customer_id = o.customer_id
+Group by c.customer_id, c.first_name, c.last_name
+Having sum(o.total_amount) > (select avg(total_spent) from
+(select customer_id, sum(o1.total_amount) as total_spent from orders o1
+Group by customer_id) as total_spending_amount)
+And sum(o.total_amount) < (select max(total_spent) from
+(select customer_id, sum(o2.total_amount) as total_spent from orders o2
+Group by customer_id) as total_spending_amount);
+
+#Write a SQL query to show:
+	•	category_name
+	•	total value of products (sum of prices)
+
+for categories whose total value is greater than the average total value across all categories
+Select c.category_name, sum(p.price) from categories c
+Join products p on c.category_id = p.category_id
+Group by c.category_id,c.category_name
+Having sum(p.price) > (select avg(total_value) from
+(Select category_id, sum(p1.price) as total_value from products p1
+Group by category_id) as total_value_of_products);
+#Write a SQL query to show:
+	•	first_name
+	•	last_name
+	•	total number of orders
+
+for customers whose total number of orders is equal to the minimum number of orders placed by any customer.
+select c.first_name, c.last_name, count(o.order_id) as total_orders from customers c
+Join orders o on c.customer_id = o.customer_id
+Group by c.customer_id, c.first_name, c.last_name
+Having count(o.order_id) = (select min(order_count) from
+(select customer_id, count(o1.order_id) as order_count from orders o1
+Group by customer_id) as order_counts);
+
+
+
+
+
+
+
+
+
 
