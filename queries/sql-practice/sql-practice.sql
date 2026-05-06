@@ -856,6 +856,7 @@ Group by c.category_id,c.category_name
 Having sum(p.price) > (select avg(total_value) from
 (Select category_id, sum(p1.price) as total_value from products p1
 Group by category_id) as total_value_of_products);
+
 #Write a SQL query to show:
 	•	first_name
 	•	last_name
@@ -4455,6 +4456,12 @@ Select customer_id, order_id, order_date, total_amount, previous_order_amount
 from compare_with_same_customer
 Where total_amount < previous_order_amount
 and rn=1;
+
+
+
+
+
+
 
 
 
